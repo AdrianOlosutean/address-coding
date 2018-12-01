@@ -7,7 +7,7 @@ case class AddressData(customerId: String,
 
 case class Group(address_id: String, start: Int, end: Int)
 
-object Grouper {
+object Merger {
 
   def mergeImperatively(address: String, it: Iterator[AddressData]): List[Group] = {
       val iterator = it.toList.sortBy(_.fromDate).iterator
@@ -29,6 +29,23 @@ object Grouper {
         prev = current
       }
       groups.toList
+  }
+
+  def mergeFunctionally(address: String, it: Iterator[AddressData]): List[Group] = {
+    val list = it.toList.sortBy(_.fromDate)
+    merge(address, list, list.head.fromDate, list.head.toDate)
+  }
+
+  private def merge(address: String, ads: List[AddressData], start: Int, end: Int): List[Group] = ads match {
+    case x :: rest =>
+      if (x.fromDate <= end)
+        merge(address, rest, start, end max x.toDate)
+      else Group(address, start , end) ::
+        merge(address, rest, x.fromDate, x.toDate)
+    case x :: Nil =>
+      if (x.fromDate <= end) List(Group(address, start, end max x.toDate))
+      else List(Group(address, x.fromDate, x.toDate))
+    case Nil => Nil
   }
 
 }

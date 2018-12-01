@@ -7,7 +7,7 @@ class HouseholdGrouper(spark: SparkSession) {
 
     val groups = df.as[AddressData]
       .groupByKey(_.addressId)
-      .mapGroups(Grouper.mergeImperatively)
+      .mapGroups(Merger.mergeFunctionally)
       .flatMap(x => x)
       .withColumnRenamed("address_id", "Address_ID")
       .withColumnRenamed("start ", "Start_date")
