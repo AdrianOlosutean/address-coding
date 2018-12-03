@@ -42,10 +42,7 @@ object Merger {
         merge(address, rest, start, end max x.toDate)
       else Group(address, start , end) ::
         merge(address, rest, x.fromDate, x.toDate)
-    case x :: Nil =>
-      if (x.fromDate <= end) List(Group(address, start, end max x.toDate))
-      else List(Group(address, x.fromDate, x.toDate))
-    case Nil => Nil
+    case Nil => Group(address, start , end) :: Nil
   }
 
 }
